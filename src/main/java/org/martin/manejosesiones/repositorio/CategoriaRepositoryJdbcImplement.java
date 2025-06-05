@@ -38,11 +38,13 @@ public class CategoriaRepositoryJdbcImplement implements Repository<Categoria>{
     public Categoria porId(Long id) throws SQLException { //Aquí está el id del método
         //Creo un objeto de tipo categoría nulo
         Categoria categoria = null;
-        try(PreparedStatement stmt = conn.prepareStatement(
-                "select * from categoria where id = ?")){ //Selecciona todo de categoria donde el id del método
+        try(PreparedStatement stmt = conn.prepareStatement("select * from categoria where idcategoria = ?")){ //Selecciona todo de categoria donde el id del método
             stmt.setLong(1, id); //Setea el valor en la columna número uno
             try(ResultSet rs = stmt.executeQuery()){
-                categoria = getCategoria(rs);
+                if(rs.next()){
+                    categoria = getCategoria(rs);
+                }
+
             }
         }
         return categoria;
@@ -58,7 +60,7 @@ public class CategoriaRepositoryJdbcImplement implements Repository<Categoria>{
 
         if (esUpdate) {
             // Si el ID existe, se actualiza la categoría existente
-            sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE idCategoria = ?";
+            sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE idcategoria = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, categoria.getNombre());
                 stmt.setString(2, categoria.getDescripcion());
