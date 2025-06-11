@@ -1,6 +1,6 @@
 package org.martin.manejosesiones.models;
 /*
-* User: ander
+* User: Martin Rodriguez
   Date: 15/5/2025
   Time: 20:32
 * */

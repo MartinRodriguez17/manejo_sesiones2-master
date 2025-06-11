@@ -5,9 +5,7 @@
   Time: 12:03
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-         import="java.util.*, org.martin.manejosesiones.models.*" %>
-<%@ page import="org.martin.manejosesiones.models.Categoria" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.util.*, org.martin.manejosesiones.models.*" %>
 <%
     List<Categoria> categorias = (List<Categoria>) request.getAttribute("categorias");
     Optional<String> username = (Optional<String>) request.getAttribute("username");
@@ -141,7 +139,7 @@
     <td><%= cate.getIdCategoria()%></td>
     <td><%= cate.getNombre()%></td>
     <td><%= cate.getDescripcion()%></td>
-    <td><%= cate.getCondicion()%></td>
+    <td><%= cate.isCondicion()%></td>
     <td>
     <a href="<%=request.getContextPath()%>/categoria/form?id=<%=cate.getIdCategoria()%>">Editar</a>
     </td>

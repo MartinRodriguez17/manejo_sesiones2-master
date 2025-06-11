@@ -3,17 +3,13 @@ package org.martin.manejosesiones.repositorio;
 import org.martin.manejosesiones.models.Articulo;
 import org.martin.manejosesiones.models.Categoria;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ArticuloRepositoryJdbcImplement implements Repository<Articulo> {
-    //Creamos una variable de tipo conexion
+
     private Connection conn;
-    //Creamos el contructor don recibimos la conexión e inicializamos la conexion a la BBDD
 
     public ArticuloRepositoryJdbcImplement(Connection conn) {
         this.conn = conn;
@@ -23,27 +19,63 @@ public class ArticuloRepositoryJdbcImplement implements Repository<Articulo> {
     public List<Articulo> listar() throws SQLException {
         List<Articulo> articulos = new ArrayList<>();
         try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("select a.*,c.nombre as categoria FROM articulo as a inner join categoria as c ON " +
-                     " (a.idcategoria=c.idcategoria)")) {
-            while (rs.next()){
-                Articulo articulo = getArticulo(rs);
-                articulos.add(articulo);
+             ResultSet rs = stmt.executeQuery("SELECT * FROM articulo")) {
+            while (rs.next()) {
+                Articulo a = getArticulo(rs);
+                articulos.add(a);
             }
-
         }
         return articulos;
     }
 
-
-
     @Override
     public Articulo porId(Long id) throws SQLException {
-        return null;
+        Articulo articulo = null;
+        try (PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM articulo WHERE idarticulo=?")) {
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    articulo = getArticulo(rs);
+                }
+            }
+        }
+        return articulo;
     }
 
     @Override
     public void guardar(Articulo articulo) throws SQLException {
+        String sql;
+        if (articulo.getIdArticulo() != null && articulo.getIdArticulo() > 0) {
+            sql = "UPDATE articulo SET idcategoria=?, codigo=?, nombre=?, stock=?, descripcion=?, imagen=?, condicion=? WHERE idarticulo=?";
+        } else {
+            sql = "INSERT INTO articulo(idcategoria, codigo, nombre, stock, descripcion, imagen, condicion) VALUES(?,?,?,?,?,?,?)";
+        }
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, articulo.getIdCategoria());
+            stmt.setString(2, articulo.getCodigo());
+            stmt.setString(3, articulo.getNombre());
+            stmt.setLong(4, articulo.getStock());
+            stmt.setString(5, articulo.getDescripcion());
+            stmt.setString(6, articulo.getImagen());
+            stmt.setBoolean(7, articulo.isCondicion());
 
+            if (articulo.getIdArticulo() != null && articulo.getIdArticulo() > 0) {
+                stmt.setLong(8, articulo.getIdArticulo());
+            }
+
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void cambiarEstado(Long id, boolean estado) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(
+                "UPDATE articulo SET condicion=? WHERE idarticulo=?")) {
+            stmt.setBoolean(1, estado);
+            stmt.setLong(2, id);
+            stmt.executeUpdate();
+        }
     }
 
     @Override
@@ -52,18 +84,15 @@ public class ArticuloRepositoryJdbcImplement implements Repository<Articulo> {
     }
 
     private static Articulo getArticulo(ResultSet rs) throws SQLException {
-        Articulo articulo = new Articulo();
-        articulo.setIdArticulo(rs.getLong("idarticulo"));
-        Categoria c = new Categoria();
-        c.setIdCategoria(rs.getLong("idcategoria"));
-        c.setNombre(rs.getString("nombre"));
-        articulo.setCategoria(c);
-        articulo.setCodigo(rs.getString("codigo"));
-        articulo.setNombre(rs.getString("nombre"));
-        articulo.setStock(rs.getInt("stock"));
-        articulo.setDescripcion(rs.getString("descripcion"));
-        articulo.setImagen(rs.getString("imagen"));
-        articulo.setCondicion(rs.getInt("condicion"));
-        return articulo;
+        Articulo a = new Articulo();
+        a.setIdArticulo(rs.getLong("idarticulo"));
+        a.setIdCategoria(rs.getLong("idcategoria"));
+        a.setCodigo(rs.getString("codigo"));
+        a.setNombre(rs.getString("nombre"));
+        a.setStock(rs.getLong("stock"));
+        a.setDescripcion(rs.getString("descripcion"));
+        a.setImagen(rs.getString("imagen"));
+        a.setCondicion(rs.getBoolean("condicion"));
+        return a;
     }
 }

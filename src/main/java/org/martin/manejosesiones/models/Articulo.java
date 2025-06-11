@@ -1,33 +1,36 @@
 package org.martin.manejosesiones.models;
 
+/// Clase que representa un artículo con sus atributos básicos
 public class Articulo {
-    //declaramos los atributos de la clase Articulo en base a la tabla de la BBDD
-    private Long idArticulo;
-    private Categoria categoria;
-    private String codigo;
-    private String nombre;
-    private int stock;
-    private String descripcion;
-    private String imagen;
-    private int condicion;
+    // Encapsulamiento usando wrappers para permitir valores null
+    private Long idArticulo;      // Identificador del artículo (puede ser null)
+    private Long idCategoria;     // ID de la categoría a la que pertenece
+    private String codigo;        // Código único del artículo
+    private String nombre;        // Nombre del artículo
+    private Long stock;          // Cantidad disponible en inventario
+    private String descripcion;   // Descripción detallada
+    private String imagen;        // Ruta o nombre de la imagen asociada
+    private boolean condicion;    // Estado (activo/inactivo)
 
-    //Implementamos el constructor vacio
-    public Articulo(){
+    // Constructor vacío (por defecto)
+    public Articulo() {
+    }
 
+    // Constructor con parámetros para inicializar todos los atributos
+    public Articulo(Long idArticulo, Long idCategoria, String codigo,
+                    String nombre, Long stock, String descripcion,
+                    String imagen, boolean condicion) {
+        this.idArticulo = idArticulo;
+        this.idCategoria = idCategoria;
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.stock = stock;
+        this.descripcion = descripcion;
+        this.imagen = imagen;
+        this.condicion = condicion;
     }
-    //Implmentamso un constructor que inicialice todos los parámetros
-    public Articulo(Long idArticulo, String tipo, String codigo, String nombre, int stock, String descripcion, String imagen, int condicion){
-        this.idArticulo=idArticulo;
-        Categoria categoria = new Categoria();
-        categoria.setNombre(tipo);
-        this.codigo=codigo;
-        this.nombre=nombre;
-        this.stock=stock;
-        this.descripcion=descripcion;
-        this.imagen=imagen;
-        this.condicion=condicion;
-    }
-    //métodos get and set
+
+    // Métodos getter y setter para idArticulo
     public Long getIdArticulo() {
         return idArticulo;
     }
@@ -36,22 +39,16 @@ public class Articulo {
         this.idArticulo = idArticulo;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    // Métodos getter y setter para idCategoria
+    public Long getIdCategoria() {
+        return idCategoria;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setIdCategoria(Long idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
+    // Métodos getter y setter para codigo
     public String getCodigo() {
         return codigo;
     }
@@ -60,14 +57,25 @@ public class Articulo {
         this.codigo = codigo;
     }
 
-    public int getStock() {
+    // Métodos getter y setter para nombre
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    // Métodos getter y setter para stock
+    public Long getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Long stock) {
         this.stock = stock;
     }
 
+    // Métodos getter y setter para descripcion
     public String getDescripcion() {
         return descripcion;
     }
@@ -76,6 +84,7 @@ public class Articulo {
         this.descripcion = descripcion;
     }
 
+    // Métodos getter y setter para imagen
     public String getImagen() {
         return imagen;
     }
@@ -84,11 +93,12 @@ public class Articulo {
         this.imagen = imagen;
     }
 
-    public int getCondicion() {
+    // Métodos getter y setter para condicion
+    public boolean isCondicion() {
         return condicion;
     }
 
-    public void setCondicion(int condicion) {
+    public void setCondicion(boolean condicion) {
         this.condicion = condicion;
     }
 }
